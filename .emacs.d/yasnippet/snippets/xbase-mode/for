@@ -1,0 +1,6 @@
+# name: FOR ... TO ...  ...
+# key: FOR
+# --
+FOR ${var} TO ${collection}
+    $0
+NEXT

@@ -1,0 +1,7 @@
+# key: FUNC
+# --
+FUNCTION ${1:name}($2)
+    LOCAL $3
+
+    $0
+RETURN .T.

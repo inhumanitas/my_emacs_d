@@ -1,0 +1,7 @@
+# name: WHILE
+# key: WHILE
+# --
+
+WHILE ${condition}
+    $0
+ENDDO

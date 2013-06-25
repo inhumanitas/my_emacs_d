@@ -1,0 +1,7 @@
+# name: IF ENDIF
+# key: if
+# --
+
+IF $1
+    $0
+ENDIF

@@ -1,0 +1,9 @@
+# name: IF ELSE ENDIF
+# key: IF ELSE
+# --
+
+IF $1
+    $0
+ELSE
+    $1
+ENDIF
