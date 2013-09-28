@@ -188,14 +188,6 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
 (add-hook 'javascript-mode-hook (lambda () (interactive) (column-marker-3 79)))
 (add-hook 'python-mode-hook (lambda () (interactive) (column-marker-3 79)))
 
-(defun insert-second-hook ()
-  (interactive)
-  (insert "()")
-  (goto-char (- (point) 1))
-)
-(global-set-key (kbd "\(") 'insert-second-hook)
-
-
 ;; after save events
 ;;; убивать пробелы в конце строк
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -211,7 +203,6 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
 (global-set-key [f8] 'linum-mode)
 (global-set-key [f11] 'ibuffer)
 (global-set-key [f10] 'bookmark-bmenu-list)
-
 
 ;; eng => ru
 (load "eik")
