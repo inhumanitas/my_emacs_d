@@ -1,10 +1,8 @@
 ;; colors
 (set-background-color "gray90")
 (set-foreground-color "black")
-
 (global-hl-line-mode t)
 (set-face-background 'hl-line "gray83")
-
 (defun fontify-frame (frame)
   (set-frame-parameter frame 'font "Monospace-10"))
 ;; Fontify current frame
@@ -18,7 +16,19 @@
 ;; menu bar
 (menu-bar-mode -1)
 
+;; geometry and position
+(set-frame-height (selected-frame) 680)
+(set-frame-width (selected-frame) 118)
+
 (desktop-save-mode 1)
+
+;;Save minibuffer history
+(savehist-mode 1)
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/"))
+
+;; load macros
+(load "init-macros.el")
 
 ;; yes = y
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -45,36 +55,15 @@
 (setq default-tab-width 4)
 (setq x-select-enable-clipboard t)
 
-;;(setq yas/indent-line nil)
-
-(modify-coding-system-alist 'file "\\.ch\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.prg\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.mac\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.scn\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.f2r\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.fil\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.ref\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.tlb\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.itm\\'" 'cp1251-unix)
+;; change coding system for files
 (modify-coding-system-alist 'file "\\.ini\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.wgs\\'" 'cp1251-unix)
-(modify-coding-system-alist 'file "\\.kazn\\'" 'cp1251-unix)
 
-
+;; jabber
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-jabber-0.8.92/"))
 (require 'jabber)
 (require 'jabber-autoloads)
-
-
-;;(load "~/.emacs.d/autosmiley.el")
-;;(require 'autosmiley)
-;;(load "~/.emacs.d/emacs-rc-autosmiley.el")
-;;(add-hook 'jabber-chat-mode-hook 'autosmiley-mode)
-
-
 (defun jabber-visit-history (jid)
   "Visit jabber history with JID in a new buffer.
-
 Performs well only for small files. Expect to wait a few seconds
 for large histories. Adapted from `jabber-chat-create-buffer'."
   (interactive (list (jabber-read-jid-completing "JID: ")))
@@ -88,43 +77,34 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
                                           (jabber-history-filename jid))))
     (view-mode)))
 
-;;(add-hook 'jabber-chat-mode-hook 'autosmiley-mode)
-
-;;(add-to-list 'gnus-smiley-file-types "gif")
-;;(setq smiley-base-directory (concat (getenv "HOME") "/.emacs.d/smileys/"))
-;;(smiley-load-theme "kolobok")
-
-
 ;; Prevent annoying \"Active processes exist\" query when you quit Emacs.
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   (flet ((process-list ())) ad-do-it))
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(auto-save-file-name-transforms (quote ((".*" "/tmp/emacs/\\1" t))))
  '(backup-directory-alist (quote ((".*" . "/tmp/emacs/"))))
  '(current-language-environment "UTF-8")
  '(inhibit-startup-screen t)
- '(jabber-account-list (quote (("NAME@DOMAIN" (:network-server . "DOMAIN") (:connection-type . ssl) (:password . "PSWD_HERE") ))))
- '(jabber-default-status "emacs everywhere")
- '(jabber-alert-message-hooks (quote (jabber-message-libnotify jabber-message-echo jabber-message-scroll)))
+ '(jabber-account-list (quote (("valiullin@portal.bars-open.ru" (:network-server . "portal.bars-open.ru") (:connection-type . ssl) (:password . "")))))
+;; '(jabber-alert-message-hooks (quote (jabber-message-libnotify jabber-message-echo jabber-message-scroll)))
  '(jabber-alert-presence-hooks nil)
  '(jabber-auto-reconnect t)
- '(jabber-display-menu t)
  '(jabber-autoaway-verbose t)
+ '(jabber-backlog-days 30)
+ '(jabber-backlog-number 40)
+ '(jabber-default-status "emacs everywhere")
+ '(jabber-display-menu t)
+ '(jabber-history-enabled t)
  '(jabber-keepalive-interval 200)
  '(jabber-keepalive-timeout 20)
- '(jabber-history-enabled t)
- '(jabber-use-global-history nil)
- '(jabber-backlog-number 40)
- '(jabber-backlog-days 30)
-)
+ '(jabber-use-global-history nil))
 
 (defvar libnotify-program "/usr/bin/notify-send")
-
 (defun notify-send (title message)
   (start-process "notify" " notify"
          libnotify-program "--expire-time=4000" title message))
@@ -142,7 +122,6 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
 
 (add-hook 'jabber-alert-message-hooks 'libnotify-jabber-notify)
 
-
 ;; link appears nicely
 (add-hook 'jabber-chat-mode-hook 'goto-address)
 
@@ -156,7 +135,20 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
 ;; '(jabber-silent-mode t)
 
 '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+(jabber-connect-all)
+(jabber-mode-line-mode)
+(setq jabber-mode-line-string (list " " 'jabber-mode-line-presence))
 
+;; mail
+(setenv "MAILHOST" "mail.bars-open.ru")
+(setq rmail-primary-inbox-list '("po:valiullin")
+      rmail-pop-password-required t)
+(require 'rmail-saver)
+(setq saved-rmail-file-directory "~/rmail/")
+(autoload 'daves-rmail-save-messages-babyl "rmail-saver" nil t)
+(autoload 'daves-rmail-save-messages-inbox "rmail-saver" nil t)
+(autoload 'daves-rmail-save-this-message-babyl "rmail-saver" nil t)
+(autoload 'daves-rmail-save-this-message-inbox "rmail-saver" nil t)
 
 ;; language bindings
 (setq auto-mode-alist
@@ -184,20 +176,15 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
          ( "\\.erl$". erlang-mode)
    )))
 
-;;
-
 ;; create the autosave dir if necessary, since emacs won't.
 (make-directory "/tmp/emacs/" t)
 (add-to-list 'backup-directory-alist
              (cons ".*" "/tmp/emacs"))
 
-(add-to-list 'load-path "~/.emacs.d/")
-
-;(load "xbase")
-
+;;(add-to-list 'load-path "~/.emacs.d/")
+;; show line limit
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/column-marker"))
 (require 'column-marker)
-(add-hook 'xbase-mode-hook (lambda () (interactive) (column-marker-3 79)))
 (add-hook 'javascript-mode-hook (lambda () (interactive) (column-marker-3 79)))
 (add-hook 'python-mode-hook (lambda () (interactive) (column-marker-3 79)))
 
@@ -208,10 +195,6 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
 )
 (global-set-key (kbd "\(") 'insert-second-hook)
 
-;; geometry and position
-(set-frame-height (selected-frame) 680)
-(set-frame-width (selected-frame) 118)
-;;(set-frame-position (selected-frame) 1024 0)
 
 ;; after save events
 ;;; убивать пробелы в конце строк
@@ -219,38 +202,29 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
 ;;; замена табов пробелами
 (add-hook 'before-save-hook '(lambda () (untabify (point-min) (point-max))))
 
-;;(put 'upcase-region 'disabled nil)
-
 ;; global shortcut
 (global-set-key [?\C-,] 'previous-buffer)
 (global-set-key [?\C-.] 'next-buffer)
 (global-set-key [?\C-'] 'toggle-truncate-lines)
 (global-set-key [?\C-:] 'kill-this-buffer)
 
-;;(global-set-key "\C-cs" 'shell)
-
-;;(global-set-key [f5] 'call-last-kbd-macro)
-;;(global-set-key [f8] 'linum-mode)
-;;(global-set-key [f11] 'ibuffer)
-;;(global-set-key [f10] 'bookmark-bmenu-list)
+(global-set-key [f8] 'linum-mode)
+(global-set-key [f11] 'ibuffer)
+(global-set-key [f10] 'bookmark-bmenu-list)
 
 
 ;; eng => ru
 (load "eik")
 (global-set-key [f9] 'eik/tr)
 
-;;(require 'highlight-symbol)
-
-;;(setenv "PS1" "\\e[0;32m◆\\u@\\H \\D{%Y-%m-%d} \\t\\e[0;30m\\w\\n")
-
 (require 'uniquify)
 (require 'minimap)
-(require 'ido)
 
 ;;(add-to-list 'load-path "~/.emacs.d/magit")
 ;;(load "magit")
 
-
+;; ido
+(require 'ido)
 (setq ido-save-directory-list-file (concat (getenv "HOME") "/.emacs.d/ido/ido.last"))
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -266,24 +240,15 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
 
 (require 'diff-hl)
 
-;(add-to-list 'load-path "~/.emacs.d/yasnippet")
-;(require 'yasnippet)
-;(yas/initialize)
-;(yas/load-directory "~/.emacs.d/yasnippet/snippets")
-
-;;(global-set-key [(control f3)] 'highlight-symbol-at-point)
-;;(global-set-key [f3] 'highlight-symbol-next)
-;;;(global-set-key [(shift f3)] 'highlight-symbol-prev)
-;;(global-set-key [(meta f3)] 'highlight-symbol-prev)
-
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(jabber-title-medium ((t (:inherit variable-pitch :weight bold :height 2.0 :width condensed))))
  '(jabber-title-small ((t (:inherit variable-pitch :weight bold :height 1.0 :width condensed)))))
 
+;; copy buffer path
 (defun copy-buffer-file-name-as-kill(choice)
   "Copy the buffer-file-name to the kill-ring"
   (interactive "cCopy Buffer Name (f) full, (d) directory, (n) name")
@@ -308,24 +273,13 @@ for large histories. Adapted from `jabber-chat-create-buffer'."
                             (?\{ . ?\})
                             (?\[ . ?\])
                             ) )
+(electric-pair-mode)
 
-(require 'dired+)
+;; dired
+(require 'init-dired)
 (define-key ctl-x-map   "d" 'diredp-dired-files)
 (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
-
-(jabber-connect-all)
-
-
-(require 'pymacs)
- (pymacs-load "ropemacs" "rope-")
-
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-
-(setq ropemacs-enable-autoimport 't)
+(dired-details-show)
 
 ;;
 ;; end of .emacs

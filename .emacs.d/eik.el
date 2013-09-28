@@ -73,18 +73,19 @@
   (puthash "$" "*" eik-chartable)
   (puthash "%" ":" eik-chartable)
   (puthash "^" "," eik-chartable)
-  (puthash "&" "." eik-chartable)
+  (puthash "&" "?" eik-chartable)
   (puthash "*" ";" eik-chartable)
+  (puthash "?" "," eik-chartable)
   (setq eik-str-out "")
   (setq eik-char-in "")
   (setq eik-char-out "")
   (setq eik-i start)
   (while (< eik-i end)
-    (setq eik-char-in 
-	  (buffer-substring-no-properties eik-i (+ eik-i 1)))
+    (setq eik-char-in
+      (buffer-substring-no-properties eik-i (+ eik-i 1)))
     (setq eik-char-out (gethash eik-char-in eik-chartable nil))
     (if (not eik-char-out)
-	(setq eik-char-out eik-char-in))
+    (setq eik-char-out eik-char-in))
     (setq eik-str-out (concat eik-str-out  eik-char-out))
     (setq eik-i (1+ eik-i))
     )
@@ -92,4 +93,3 @@
   (insert eik-str-out start)
   (delete-char -1)
 )
-
